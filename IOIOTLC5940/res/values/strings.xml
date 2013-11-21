@@ -2,7 +2,9 @@
 <resources>
 
     <string name="app_name">IOIOTLC5940</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="knight_rider">Knight Rider</string>
+    
 </resources>
