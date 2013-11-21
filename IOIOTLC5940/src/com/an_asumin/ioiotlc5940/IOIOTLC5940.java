@@ -88,7 +88,6 @@ public class IOIOTLC5940 {
 
 		xlat_ = ioio.openDigitalOutput(xlatPinNum_, false);
 		vprg_ = ioio.openDigitalOutput(vprgPinNum_, false);
-//		spi_ = ioio.openSpiMaster(soutPinNum_, sinPinNum_, sclkPinNum_, slaveSelectPinNum_, SPI_RATE_HZ);
 		spi_ = ioio.openSpiMaster(new DigitalInput.Spec(soutPinNum_), new DigitalOutput.Spec(sinPinNum_), new DigitalOutput.Spec(sclkPinNum_), new DigitalOutput.Spec[]{ new DigitalOutput.Spec(slaveSelectPinNum_)}, new SpiMaster.Config(SPI_RATE_HZ, false, false));
 		blank_ = ioio.openPwmOutput(blankPinNum_, blankFrequency_);
 		setBLANK();
@@ -96,12 +95,21 @@ public class IOIOTLC5940 {
 		stopGSCLK();
 	}
 
-	public void setBLANK() throws ConnectionLostException{
+	public void setEnabled(boolean enabled) throws ConnectionLostException{
+		if(enabled) removeBLANK();
+		else setBLANK();
+	}
+	
+	public boolean isEnabled(){
+		return isBlankMode_;
+	}
+	
+	private void setBLANK() throws ConnectionLostException{
 		blank_.setDutyCycle((float) 1.0);
 		isBlankMode_ = true;
 	}
 	
-	public void removeBLANK() throws ConnectionLostException{
+	private void removeBLANK() throws ConnectionLostException{
 		blank_.setDutyCycle((float) 1/GRAYSCALE_STEP_NUM);
 		isBlankMode_ = false;
 	}

@@ -142,7 +142,7 @@ public class MainActivity extends IOIOActivity {
 				tlc_.setGrayscaleDataInStep(i, seekBarColors_[i % 3].getProgress());
 			}
 			tlc_.updateGrayscaleData();
-			tlc_.removeBLANK();
+			tlc_.setEnabled(true);
 			
 			// frame counter
 			frameCounter = 0;
