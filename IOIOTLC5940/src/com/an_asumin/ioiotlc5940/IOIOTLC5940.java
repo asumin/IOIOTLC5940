@@ -33,7 +33,7 @@ public class IOIOTLC5940 {
 	// internal parameters
 	private boolean needsExtraSclk_;
 	private boolean isBlankMode_;
-	private boolean receivesStatusInformationData_;
+	private boolean isStatusInformationDataEnabled_;
 	private boolean hasStatusInformationData_;
 	private boolean hasNewGrayscaleData_;
 	private boolean hasNewDotCorrectionData_;
@@ -58,7 +58,7 @@ public class IOIOTLC5940 {
 	public IOIOTLC5940(IOIO ioio, int tlcNum, 
 			int vprgPinNum, int sinPinNum, int sclkPinNum, int xlatPinNum,
 			int blankPinNum, int gsclkPinNum, int soutPinNum, int slaveSelectPinNum,
-			boolean receivesStatusInformationData) throws ConnectionLostException{
+			boolean isStatusInformationDataEnabled) throws ConnectionLostException{
 
 		// This call might be unnecessary
 		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
@@ -81,7 +81,7 @@ public class IOIOTLC5940 {
 		
 		needsExtraSclk_ = true;
 		isBlankMode_ = false;
-		receivesStatusInformationData_ = receivesStatusInformationData;
+		isStatusInformationDataEnabled_ = isStatusInformationDataEnabled;
 		hasStatusInformationData_ = false;
 		hasNewGrayscaleData_ = false;
 		hasNewDotCorrectionData_ = false;
@@ -151,7 +151,7 @@ public class IOIOTLC5940 {
 		}
 	}
 
-	public void updateGrayscaleData() throws ConnectionLostException, InterruptedException{
+	public void updateGrayscale() throws ConnectionLostException, InterruptedException{
 
 		// update only when it has new data
 		if(!hasNewGrayscaleData_) return;
@@ -164,7 +164,7 @@ public class IOIOTLC5940 {
 
 		// depending on the mode of just before
 		if(needsExtraSclk_){
-			if(receivesStatusInformationData_){
+			if(isStatusInformationDataEnabled_){
 				for(int i = 0; i < tlcNum_; ++i){
 					spi_.writeRead(grayscaleOutputData[i], grayscaleOutputData[i].length, grayscaleOutputData[i].length, statusInformationData_[tlcNum_ - 1 - i], statusInformationData_[tlcNum_ - 1 - i].length);
 				}
@@ -207,19 +207,19 @@ public class IOIOTLC5940 {
 		hasNewGrayscaleData_ = false;
 	}
 	
-	public void receivesStatusInformationData(boolean val){
-		receivesStatusInformationData_ = val;
+	public void setStatusInformationDataEnabled(boolean enabled){
+		isStatusInformationDataEnabled_ = enabled;
 	}
 	
-	public boolean receivesStatusInformationData(){
-		return receivesStatusInformationData_;
+	public boolean isStatusInformationDataEnabled(){
+		return isStatusInformationDataEnabled_;
 	}
 	
 	public boolean hasStatusInformationData(){
 		return hasStatusInformationData_;
 	}
 	
-	public boolean getLedOpenDetectionData(int channel){
+	public boolean getLedOpenDetection(int channel){
 		if(!hasStatusInformationData_) return false;
 		if(channel < 0 || channel >= totalChannelNum_) return false;
 		
@@ -246,44 +246,44 @@ public class IOIOTLC5940 {
 		return hasNewGrayscaleData_;
 	}
 
-	private int getGrayscaleValueInRange(int value){
+	private int arrangeGrayscaleValueInRange(int value){
 		if(value < 0) return 0;
 		else if(value >= GRAYSCALE_STEP_NUM) return GRAYSCALE_STEP_NUM - 1;
 		else return value;
 	}
 	
-	public void setGrayscaleDataInStep(int channel, int value){
+	public void setGrayscaleInStep(int channel, int value){
 		if(channel < 0 || channel >= totalChannelNum_) return;
-		value = getGrayscaleValueInRange(value);
+		value = arrangeGrayscaleValueInRange(value);
 		// new value?
 		if(grayscaleData_[channel] == value) return;
 		grayscaleData_[channel] = value;
 		hasNewGrayscaleData_ = true;
 	}
 	
-	public void setGrayscaleData(int channel, float value){
-		setGrayscaleDataInStep(channel, (int) Math.round((GRAYSCALE_STEP_NUM - 1) * value));
+	public void setGrayscale(int channel, float value){
+		setGrayscaleInStep(channel, (int) Math.round((GRAYSCALE_STEP_NUM - 1) * value));
 	}
 	
-	public int getGrayscaleDataInStep(int channel){
+	public int getGrayscaleInStep(int channel){
 		return grayscaleData_[channel];
 	}
 	
-	public float getGrayscaleData(int channel) {
+	public float getGrayscale(int channel) {
 		return grayscaleData_[channel] / (GRAYSCALE_STEP_NUM - 1);
 	}
 	
-	public void setAllGrayscaleDataInStep(int value){
-		value = getGrayscaleValueInRange(value);
+	public void setAllGrayscaleInStep(int value){
+		value = arrangeGrayscaleValueInRange(value);
 		for(int i = 0; i < grayscaleData_.length; ++i) grayscaleData_[i] = value;
 		hasNewGrayscaleData_ = true;
 	}
 
-	public void setAllGrayscaleData(float value){
-		setAllGrayscaleDataInStep((int) Math.round((GRAYSCALE_STEP_NUM - 1) * value));
+	public void setAllGrayscale(float value){
+		setAllGrayscaleInStep((int) Math.round((GRAYSCALE_STEP_NUM - 1) * value));
 	}
 	
-	public void updateDotCorrectionData() throws ConnectionLostException, InterruptedException{
+	public void updateDotCorrection() throws ConnectionLostException, InterruptedException{
 
 		// update only when it has new data
 		if(!hasNewDotCorrectionData_) return;
@@ -315,40 +315,40 @@ public class IOIOTLC5940 {
 		return hasNewDotCorrectionData_;
 	}
 	
-	private int getDotCorrectionValueInRange(int value){
+	private int arrangeDotCorrectionValueInRange(int value){
 		if(value < 0) return 0;
 		else if(value >= DOT_CORRECTION_STEP_NUM) return DOT_CORRECTION_STEP_NUM - 1;		
 		else return value;
 	}
 	
-	public void setDotCorrectionDataInStep(int channel, int value){
+	public void setDotCorrectionInStep(int channel, int value){
 		if(channel < 0 || channel >= totalChannelNum_) return;
-		value = getDotCorrectionValueInRange(value);
+		value = arrangeDotCorrectionValueInRange(value);
 		// new data?
 		if(dotCorrectionData_[channel] == value) return;
 		dotCorrectionData_[channel] = value;
 		hasNewDotCorrectionData_ = true;
 	}
 	
-	public void setDotCorrectionData(int channel, float value){
-		setDotCorrectionDataInStep(channel, (int) Math.round((DOT_CORRECTION_STEP_NUM - 1) * value));
+	public void setDotCorrection(int channel, float value){
+		setDotCorrectionInStep(channel, (int) Math.round((DOT_CORRECTION_STEP_NUM - 1) * value));
 	}	
 	
-	public int getDotCorrectionDataInStep(int channel){
+	public int getDotCorrectionInStep(int channel){
 		return dotCorrectionData_[channel];
 	}
 
-	public float getDotCorrectionData(int channel){
+	public float getDotCorrection(int channel){
 		return dotCorrectionData_[channel] / (DOT_CORRECTION_STEP_NUM - 1);
 	}
 	
-	public void setAllDotCorrectionDataInStep(int value){
-		value = getDotCorrectionValueInRange(value);
+	public void setAllDotCorrectionInStep(int value){
+		value = arrangeDotCorrectionValueInRange(value);
 		for(int i = 0; i < dotCorrectionData_.length; ++i) dotCorrectionData_[ i ] = value;
 		hasNewDotCorrectionData_ = true;
 	}
 	
-	public void setAllDotCorrectionData(float value){
-		setAllDotCorrectionDataInStep((int) Math.round((DOT_CORRECTION_STEP_NUM - 1) * value));
+	public void setAllDotCorrection(float value){
+		setAllDotCorrectionInStep((int) Math.round((DOT_CORRECTION_STEP_NUM - 1) * value));
 	}
 }

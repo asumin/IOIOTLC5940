@@ -104,22 +104,6 @@ public class MainActivity extends IOIOActivity {
 		// TLC5940
 		private IOIOTLC5940 tlc_;
 
-		// ----------------------------------------------------
-		// PIN Settings !
-		// According to the pin function table of IOIO-OTG, please set the number of pin
-		private final int vprgPinNum_ = 26;			// DigitalOutput
-		private final int sinPinNum_ = 31;			// SpiMaster - mosiPin
-		private final int sclkPinNum_ = 30;			// SpiMaster - clkPin
-		private final int xlatPinNum_ = 27;			// DigitalOutput
-		private final int blankPinNum_ = 28;		// PwmOutput
-		private final int gsclkPinNum_ = 29;		// PwmOutput
-		// if you don't want to receive status information data, you don't have to connect sout pin.
-		private final int soutPinNum_ = 32;			// SpiMaster - misoPin
-		// Slave Select pin must be set in order to use the function of SPI communication in IOIO-OTG board, there is no role in practice.
-		// So don't connect this pin to any pin.
-		private final int slaveSelectPinNum_ = 8;
-		//-----------------------------------------------------
-
 		// Knight Rider
 		private int knightRiderSpotLedNum_ = 0;
 		private int knightRiderDirection_ = 1;
@@ -134,14 +118,14 @@ public class MainActivity extends IOIOActivity {
 		protected void setup() throws ConnectionLostException, InterruptedException {
 			
 			// TLC5940 setting
-			tlc_ = new IOIOTLC5940(ioio_, tlcNum_, vprgPinNum_, sinPinNum_, sclkPinNum_, xlatPinNum_, blankPinNum_, gsclkPinNum_, soutPinNum_, slaveSelectPinNum_, true);
-			tlc_.setAllDotCorrectionData(1.0f);
-			tlc_.updateDotCorrectionData();			
+			tlc_ = new IOIOTLC5940(ioio_, tlcNum_, IOIOPinsList.VPRG_PIN_NUM, IOIOPinsList.SIN_PIN_NUM, IOIOPinsList.SCLK_PIN_NUM, IOIOPinsList.XLAT_PIN_NUM, IOIOPinsList.BLANK_PIN_NUM, IOIOPinsList.GSCLK_PIN_NUM, IOIOPinsList.SOUT_PIN_NUM, IOIOPinsList.SLAVE_SELECT_PIN_NUM, true);
+			tlc_.setAllDotCorrection(1.0f);
+			tlc_.updateDotCorrection();			
 			for(int i = 0; i < tlcNum_ * IOIOTLC5940.TLC_CHANNEL_NUM; ++i){
-				if(!toggleButtonLEDs_[i / 3].isChecked()) tlc_.setGrayscaleData(i, 0);
-				tlc_.setGrayscaleDataInStep(i, seekBarColors_[i % 3].getProgress());
+				if(!toggleButtonLEDs_[i / 3].isChecked()) tlc_.setGrayscale(i, 0);
+				tlc_.setGrayscaleInStep(i, seekBarColors_[i % 3].getProgress());
 			}
-			tlc_.updateGrayscaleData();
+			tlc_.updateGrayscale();
 			tlc_.setEnabled(true);
 			
 			// frame counter
@@ -156,32 +140,32 @@ public class MainActivity extends IOIOActivity {
 			if(toggleButtonKnightRider_.isChecked()){
 				
 				// turn on the LED(only red channel) that become the focus
-				for(int i = 0; i < tlcNum_ * IOIOTLC5940.TLC_CHANNEL_NUM; ++i) tlc_.setGrayscaleData(i, 0.0f);
-				tlc_.setGrayscaleData(knightRiderSpotLedNum_ * 3, 1.0f);
+				for(int i = 0; i < tlcNum_ * IOIOTLC5940.TLC_CHANNEL_NUM; ++i) tlc_.setGrayscale(i, 0.0f);
+				tlc_.setGrayscale(knightRiderSpotLedNum_ * 3, 1.0f);
 				// turn on next LED(only red channel, mid brightness) if it's possible,
 				// and decide the direction in which light moves
 				if(knightRiderSpotLedNum_ != 0){
-					tlc_.setGrayscaleData((knightRiderSpotLedNum_ - 1) * 3, 0.5f);
+					tlc_.setGrayscale((knightRiderSpotLedNum_ - 1) * 3, 0.5f);
 				}else{
 					knightRiderDirection_ = 1;
 				}
 				if(knightRiderSpotLedNum_ != tlcNum_ / 3 * IOIOTLC5940.TLC_CHANNEL_NUM){
-					tlc_.setGrayscaleData((knightRiderSpotLedNum_ + 1) * 3, 0.5f);
+					tlc_.setGrayscale((knightRiderSpotLedNum_ + 1) * 3, 0.5f);
 				}else{
 					knightRiderDirection_ = -1;
 				}
 				knightRiderSpotLedNum_ += knightRiderDirection_;
-				tlc_.updateGrayscaleData();
+				tlc_.updateGrayscale();
 
 			// Normal mode
 			}else{
 				// turn on the each LED according to the state of toggle buttons
 				for(int i = 0; i < tlcNum_ * IOIOTLC5940.TLC_CHANNEL_NUM; ++i){
-					if(toggleButtonLEDs_[i / 3].isChecked()) tlc_.setGrayscaleDataInStep(i, seekBarColors_[i % 3].getProgress());
+					if(toggleButtonLEDs_[i / 3].isChecked()) tlc_.setGrayscaleInStep(i, seekBarColors_[i % 3].getProgress());
 				}
 
 				if(tlc_.hasNewGrayscaleData()){
-					tlc_.updateGrayscaleData();					
+					tlc_.updateGrayscale();					
 				}else{
 					// nothing to update...
 					Thread.sleep(10);
@@ -199,7 +183,7 @@ public class MainActivity extends IOIOActivity {
 				final StringBuilder ledOpenDetectionText = new StringBuilder();
 				ledOpenDetectionText.append("Open channel: ");
 				for(int i = 0; i < tlcNum_ * IOIOTLC5940.TLC_CHANNEL_NUM; ++i){
-					if(tlc_.getLedOpenDetectionData(i)){
+					if(tlc_.getLedOpenDetection(i)){
 						ledOpenDetectionText.append(Integer.toString(i) + " ");
 						openDetectionFlag = true;
 					}
