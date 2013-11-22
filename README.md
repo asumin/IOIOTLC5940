@@ -37,7 +37,7 @@ There are more function in IOIOTLC5940.java...
 
 #Note
  * Please connect BLANK pin with PULL-UP resistor
- * This driver class don't use XERR and EEPROM
+ * This driver class(IOIOTLC5940.java) don't use XERR and EEPROM
 
 #In oder to run sample app...
 I recommend to use only TLC5940 driver class. This is because, since the  sample application's configuration is very limited.(e.g. API level)
