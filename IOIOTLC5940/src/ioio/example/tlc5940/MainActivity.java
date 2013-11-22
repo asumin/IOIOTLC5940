@@ -1,4 +1,6 @@
-package com.an_asumin.ioiotlc5940;
+package ioio.example.tlc5940;
+
+import com.an_asumin.ioiotlc5940.R;
 
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;

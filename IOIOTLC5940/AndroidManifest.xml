@@ -22,7 +22,7 @@
 			android:required="false" />
         
         <activity
-            android:name="com.an_asumin.ioiotlc5940.MainActivity"
+            android:name="ioio.example.tlc5940.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

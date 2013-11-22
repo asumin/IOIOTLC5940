@@ -1,4 +1,4 @@
-package com.an_asumin.ioiotlc5940;
+package ioio.example.tlc5940;
 
 import ioio.lib.api.DigitalInput;
 import ioio.lib.api.DigitalOutput;
