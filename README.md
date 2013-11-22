@@ -19,13 +19,13 @@ TLC5940 is a 16ch LED driver with with PWM control and dot correction. You can c
 This is constructor. Please call this when you setup. If you use `BaseIOIOLooper`, call this on `setup()`. blankPin and gsclkPin use PWM pin of IOIO-OTG board. slaveSelectPin is required to use the SPI communication, but it is not actually used, and it is not necessary to connect. Last boolean argument indicates whether the receive status information data. If you do not want to receive the data, please set false, then you don't have to connect SOUT pin.
 
 ###`void setDotCorrection(int channel, float value)`  
-This method sets dot correction data. Valid value is 0.0f(dark) to 1.0f(Bright). It is for covering difference of individual LED, not for controlling brightness. You can call `void setAllDotCorrectionData(float value)` instead.
+This method sets dot correction data. Valid value is 0.0f(dark) to 1.0f(bright). It is for covering difference of individual LED, not for controlling brightness. You can call `void setAllDotCorrectionData(float value)` instead.
 
 ###`void updateDotCorrection()`
 This method updates dot correction data to TLC5940s through SPI communication.
 
 ###`void setGrayscale(int channel, float value)`
-This method sets dot correction data. Valid value is 0.0f(dark) to 1.0f(Bright).
+This method sets dot correction data. Valid value is 0.0f(dark) to 1.0f(bright).
 
 ###`void updateGrayscale()`
 This method updates grayscale data to TLC5940s through SPI communication.
