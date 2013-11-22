@@ -55,6 +55,7 @@ I recommend to use only TLC5940 driver class. This is because, since the  sample
 2.Make the circuit
 
  * Recommend to reference [this page](http://tlc5940arduino.googlecode.com/svn/wiki/images/breadboard-arduino-tlc5940.png)
+ * Connect 3 TLC5940s (Cascading)
  * Please connect BLANK pin with PULL-UP resistor
  * 2k resistor for IREF is good for most LEDs
 
