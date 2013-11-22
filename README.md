@@ -36,6 +36,7 @@ BLANK(no light) is enabled in the initial to save from abnormal lighting. This m
 There are more function in IOIOTLC5940.java...
 
 #Note
+ * Please refer to the IOIOLib(s) in the same way as developing normal IOIO application 
  * Please connect BLANK pin with PULL-UP resistor
  * This driver class(IOIOTLC5940.java) don't use XERR and EEPROM
 
