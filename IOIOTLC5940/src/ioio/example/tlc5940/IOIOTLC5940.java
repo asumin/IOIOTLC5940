@@ -2,6 +2,7 @@ package ioio.example.tlc5940;
 
 import ioio.lib.api.DigitalInput;
 import ioio.lib.api.DigitalOutput;
+import ioio.lib.api.DigitalOutput.Spec.Mode;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.SpiMaster;
@@ -19,10 +20,10 @@ public class IOIOTLC5940 {
 	private final int TLC_STATUS_INFORMATION_DATA_BYTE_SIZE = 24;
 	private final int GRAYSCALE_BIT_NUM = 12;
 	private final int DOT_CORRECTION_BIT_NUM = 6;
-	private final int GRAYSCALE_OUTPUT_HZ = 960;	// this is current PWM output limit
+	private final int GRAYSCALE_OUTPUT_HZ = 960;	// is this current PWM output limit ?
 	private final SpiMaster.Rate SPI_RATE_HZ = SpiMaster.Rate.RATE_8M;
 	private final int blankFrequency_ = GRAYSCALE_OUTPUT_HZ;
-	private final int gsclkFrequency_ = GRAYSCALE_OUTPUT_HZ * GRAYSCALE_STEP_NUM;
+	private final int gsclkFrequency_ = GRAYSCALE_OUTPUT_HZ * (GRAYSCALE_STEP_NUM + 1);
 	// Number of TLC5940
 	private final int tlcNum_;
 	private final int totalChannelNum_;
@@ -89,7 +90,8 @@ public class IOIOTLC5940 {
 		xlat_ = ioio.openDigitalOutput(xlatPinNum_, false);
 		vprg_ = ioio.openDigitalOutput(vprgPinNum_, false);
 		spi_ = ioio.openSpiMaster(new DigitalInput.Spec(soutPinNum_), new DigitalOutput.Spec(sinPinNum_), new DigitalOutput.Spec(sclkPinNum_), new DigitalOutput.Spec[]{ new DigitalOutput.Spec(slaveSelectPinNum_)}, new SpiMaster.Config(SPI_RATE_HZ, false, false));
-		blank_ = ioio.openPwmOutput(blankPinNum_, blankFrequency_);
+//		spi_ = ioio.openSpiMaster(new DigitalInput.Spec(soutPinNum_), new DigitalOutput.Spec(sinPinNum_), new DigitalOutput.Spec(sclkPinNum_), new DigitalOutput.Spec[]{ new DigitalOutput.Spec(slaveSelectPinNum_)}, new SpiMaster.Config(SPI_RATE_HZ, false, true));
+		blank_ = ioio.openPwmOutput(new DigitalOutput.Spec(blankPinNum_, Mode.OPEN_DRAIN), blankFrequency_);
 		setBLANK();
 		gsclk_ = ioio.openPwmOutput(gsclkPinNum_, gsclkFrequency_);
 		stopGSCLK();
@@ -110,7 +112,7 @@ public class IOIOTLC5940 {
 	}
 	
 	private void removeBLANK() throws ConnectionLostException{
-		blank_.setDutyCycle((float) 1/GRAYSCALE_STEP_NUM);
+		blank_.setDutyCycle((float) 1/(GRAYSCALE_STEP_NUM + 1));
 		isBlankMode_ = false;
 	}
 	
