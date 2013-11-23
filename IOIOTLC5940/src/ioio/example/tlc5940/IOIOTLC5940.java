@@ -150,6 +150,20 @@ public class IOIOTLC5940 {
 			}
 		}
 	}
+	
+	public void updateGrayscaleDirectly(int[] data) throws ConnectionLostException, InterruptedException{
+		for(int i = 0; i < tlcNum_ * TLC_CHANNEL_NUM; ++i){
+			setGrayscale(i, data[i]);
+		}
+		updateGrayscale();
+	}
+	
+	public void updateGrayscaleInStepDirectly(int[] data) throws ConnectionLostException, InterruptedException{
+		for(int i = 0; i < tlcNum_ * TLC_CHANNEL_NUM; ++i){
+			setGrayscaleInStep(i, data[i]);
+		}
+		updateGrayscale();
+	}
 
 	public void updateGrayscale() throws ConnectionLostException, InterruptedException{
 
@@ -176,7 +190,7 @@ public class IOIOTLC5940 {
 				}
 				ioio_.endBatch();
 				byte[] dummyRead = new byte[1];
-				spi_.writeRead(grayscaleOutputData[tlcNum_ - 1], grayscaleOutputData[tlcNum_ - 1].length, grayscaleOutputData[tlcNum_ - 1].length, dummyRead, dummyRead.length);				
+				spi_.writeRead(grayscaleOutputData[tlcNum_ - 1], grayscaleOutputData[tlcNum_ - 1].length, grayscaleOutputData[tlcNum_ - 1].length, dummyRead, dummyRead.length);
 				hasStatusInformationData_ = false;
 			}
 		}else{
